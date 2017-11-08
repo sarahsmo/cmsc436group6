@@ -1,4 +1,4 @@
-package com.example.sarah.whosthere;
+package group6.whosthere;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.sarah.whosthere", appContext.getPackageName());
+        assertEquals("group6.whosthere", appContext.getPackageName());
     }
 }

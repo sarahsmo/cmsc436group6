@@ -1,4 +1,4 @@
-package com.example.sarah.whosthere;
+package group6.whosthere;
 
 import org.junit.Test;
 
