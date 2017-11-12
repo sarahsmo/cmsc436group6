@@ -1,4 +1,4 @@
-package group6.whosthere;
+package com.example.sarah.whosthere;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +30,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +48,14 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    private static String TAG = "Attempting to log in";
+
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    //Registering
+    static final int REGISTER_REQUEST = 1;
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -52,10 +64,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+    private FirebaseAuth mAuthority = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -95,6 +109,63 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mImageView = findViewById(R.id.app_icon_view);
         mProgressView = findViewById(R.id.login_progress);
+
+        Button registerButton = findViewById(R.id.registerButton);
+        registerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerUser();
+            }
+        });
+
+        mAuthority = FirebaseAuth.getInstance();
+    }
+
+    public void onStart() {
+        super.onStart();
+
+        mAuthority = FirebaseAuth.getInstance();
+
+        //Check if user is signed in (non-null) and update UI accordingly
+        FirebaseUser currentUser = mAuthority.getCurrentUser();
+
+        if (currentUser != null) {
+            updateUI(currentUser);
+        }
+    }
+
+    private void registerUser() {
+        Intent registerActivity = new Intent(LoginActivity.this, RegisterActivity.class);
+        startActivityForResult(registerActivity, REGISTER_REQUEST);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(TAG, "Entered onActivityResult()");
+
+        if (requestCode == REGISTER_REQUEST && resultCode == RESULT_OK) {
+            String email = data.getStringExtra("email");
+            String password = data.getStringExtra("password");
+
+            mAuthority.createUserWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.i(TAG, "createUserWithEmail:success");
+                    } else {
+                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                        Toast.makeText(LoginActivity.this, "Registering this account failed.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+    private void updateUI(FirebaseUser user) {
+        if (user != null) {
+            showProgress(true);
+        }
     }
 
     private void populateAutoComplete() {
@@ -187,7 +258,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
@@ -312,24 +382,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+            // Attempt authentication against a network service
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+            mAuthority.signInWithEmailAndPassword(mEmail, mPassword)
+                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuthority.getCurrentUser();
+                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "User or password is not valid.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                        }
+                    }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
+            });
 
-            // TODO: register the new account here.
+            // TODO - register the new account here with an option to register now.
+            //registerUser();
             return false;
         }
 

@@ -1,4 +1,4 @@
-package group6.whosthere;
+package com.example.sarah.whosthere;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;

@@ -90,6 +90,13 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#1E90FF"
+                android:text="@string/facebook_btn_signup" />
+
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
@@ -103,11 +110,11 @@
                 android:text="@string/no_account_signup" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/registerButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#1E90FF"
-                android:text="@string/facebook_btn_signup" />
+                android:background="@android:color/holo_green_light"
+                android:text="Create an account" />
 
         </LinearLayout>
     </ScrollView>

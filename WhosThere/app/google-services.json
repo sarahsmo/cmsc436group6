@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "480382101317",
+    "firebase_url": "https://cmsc436-who-s-there-group-6.firebaseio.com",
+    "project_id": "cmsc436-who-s-there-group-6",
+    "storage_bucket": "cmsc436-who-s-there-group-6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480382101317:android:eec41a9c1ad30cef",
+        "android_client_info": {
+          "package_name": "com.example.sarah.whosthere"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480382101317-k6u7sg0ir02vjpt525011qelola95g90.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVXDVHk6b9YCF7UxsxW-oHb_gM2NBtIHA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
