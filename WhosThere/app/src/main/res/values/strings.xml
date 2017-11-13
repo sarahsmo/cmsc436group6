@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Who\'s There</string>
 
+    <!-- Strings related to registering -->
+    <string name="register_title">Register here:</string>
+    <string name="register_account">Register account credentials</string>
     <!-- Strings related to login -->
     <string name="log_in_title">Existing user:</string>
     <string name="no_account_signup">"Don't have an account?"</string>
