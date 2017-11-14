@@ -374,10 +374,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        boolean mSignInStatus = false;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
+            mSignInStatus = false;
         }
 
         @Override
@@ -393,20 +395,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuthority.getCurrentUser();
                             updateUI(user);
+                            mSignInStatus = true;
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "User or password is not valid.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
+                            mSignInStatus = false;
+                            // TODO - register the new account here with an option to register now.
+                            //registerUser();
                         }
                     }
 
             });
 
-            // TODO - register the new account here with an option to register now.
-            //registerUser();
-            return false;
+            return mSignInStatus;
         }
 
         @Override
