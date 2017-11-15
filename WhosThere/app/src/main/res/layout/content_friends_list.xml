@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".HomePage"
-    tools:showIn="@layout/app_bar_home_page">
+    tools:context="com.example.sarah.whosthere.FriendsList"
+    tools:showIn="@layout/activity_friends_list">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -21,19 +21,25 @@
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="People within 15 miles" />
+                android:text="Friend 1" />
 
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="People within 5 miles" />
+                android:text="Friend 2" />
 
             <TextView
                 android:id="@+id/textView5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="People in your building" />
+                android:text="Friend 3" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Friend 4" />
         </LinearLayout>
     </ScrollView>
 
