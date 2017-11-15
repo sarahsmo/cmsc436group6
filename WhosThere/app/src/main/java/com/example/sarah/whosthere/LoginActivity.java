@@ -330,11 +330,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             if (user != null) {
                                 showProgress(true);
                                 mSignInStatus = true;
+                                //this all works just fine
+                                Log.d(TAG, "status set to: " + mSignInStatus);
                             }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "User or password is not valid.",
+                            Toast.makeText(LoginActivity.this, "Email or password is not valid.",
                                     Toast.LENGTH_LONG).show();
                             mSignInStatus = false;
                             // TODO - register the new account here with an option to register now.
@@ -342,8 +344,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         }
                     }
 
-            });
+                });
+            // never makes it to here for some reason
+            Log.d(TAG, "makes it here");
 
+            if(mSignInStatus) {
+                Log.d(TAG, "status is true");
+            }
             return mSignInStatus;
         }
 
