@@ -43,7 +43,7 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15dp"
+                android:textSize="16dp"
                 android:textColor="#000000"
                 android:text="@string/log_in_title" />
 
@@ -82,7 +82,6 @@
 
             <Button
                 android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -90,20 +89,12 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#1E90FF"
-                android:text="@string/facebook_btn_signup" />
-
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:paddingBottom="15dp"
                 android:paddingTop="15dp"
                 android:textSize="20dp"
                 android:textColor="#000000"
@@ -113,8 +104,10 @@
                 android:id="@+id/registerButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/holo_green_light"
-                android:text="Create an account" />
+                android:layout_marginTop="16dp"
+                android:background="#3099E9"
+                android:text="Create an account"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>
