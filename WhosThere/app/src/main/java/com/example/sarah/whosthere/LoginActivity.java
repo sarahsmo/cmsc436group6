@@ -38,6 +38,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -46,7 +47,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private static String TAG = "Attempting to log in";
+    private static String TAG = "LOGIN_EMAIL";
 
     //Registering
     static final int REGISTER_REQUEST = 1;
@@ -134,7 +135,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.i(TAG, "createUserWithEmail:success");
+                        Log.d(TAG, "createUserWithEmail:success");
                         FirebaseUser user = mAuthority.getCurrentUser();
                         if (user != null) {
                             showProgress(false);
@@ -227,6 +228,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            Log.d(TAG, "PROGRESS IS SHOWN");
+
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -318,33 +321,45 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             // Attempt authentication against a network service
+            // create a java.util.concurrent.Semaphore with 0 initial permits
+            final Semaphore semaphore = new Semaphore(0);
 
             mAuthority.signInWithEmailAndPassword(mEmail, mPassword)
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuthority.getCurrentUser();
-                            if (user != null) {
-                                showProgress(true);
-                                mSignInStatus = true;
-                                //this all works just fine
-                                Log.d(TAG, "status set to: " + mSignInStatus);
-                            }
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Email or password is not valid.",
-                                    Toast.LENGTH_LONG).show();
-                            mSignInStatus = false;
-                            // TODO - register the new account here with an option to register now.
-                            //registerUser();
-                        }
-                    }
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithEmail:success");
+                        FirebaseUser user = mAuthority.getCurrentUser();
+                        if (user != null) {
+                            Log.d(TAG, "mAuthority check: " + (mAuthority != null));
 
-                });
+                            showProgress(true);
+                            mSignInStatus = true;
+                            //this all works just fine
+                            Log.d(TAG, "status set to: " + mSignInStatus);
+                        }
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        Toast.makeText(LoginActivity.this, "Email or password is not valid.",
+                                Toast.LENGTH_LONG).show();
+                        mSignInStatus = false;
+                        // TODO - register the new account here with an option to register now.
+                        //registerUser();
+                    }
+                    // tell the caller that we're done
+                    semaphore.release();
+                }
+            });
+
+            try {
+                semaphore.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             // never makes it to here for some reason
             Log.d(TAG, "makes it here");
 
@@ -359,18 +374,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
 
-            Intent i = new Intent(LoginActivity.this, HomePage.class);
-            startActivity(i);
-            finish();
-
-          /*  if (success) {
+            if (success) {
                 Intent i = new Intent(LoginActivity.this, HomePage.class);
                 startActivity(i);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
-            }*/
+            }
         }
 
         @Override
