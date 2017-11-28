@@ -62,8 +62,6 @@ public class HomePage extends AppCompatActivity
             i = new Intent(this, HomePage.class);
         } else if (id == R.id.nav_friends) {
             i = new Intent(this, FriendsList.class);
-//        } else if (id == R.id.nav_groups) {
-
         } else if (id == R.id.nav_settings) {
             i = new Intent(this, SettingsActivity.class);
         } else if (id == R.id.nav_logout) {
