@@ -32,12 +32,20 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -47,6 +55,9 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    //TODO - not safe privately
+    private static final String PASSWORD_KEY = "PASSWORD";
+    private static final String USER_KEY = "USER";
     private static String TAG = "LOGIN_EMAIL";
 
     //Registering
@@ -58,17 +69,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private UserLoginTask mAuthTask = null;
     private FirebaseAuth mAuthority = null;
 
+    private DatabaseReference mDatabase = null;
+
+    private String mLoggedInState;
+
+    private static String LOGGED_IN_STATE = "LOGGED_IN";
+
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
     private View mImageView;
+    private String mLastUsedPassword;
+    private String mLastUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // recovering the instance state
+        if (savedInstanceState != null) {
+            mLoggedInState = savedInstanceState.getString(LOGGED_IN_STATE);
+        }
+
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -104,18 +130,50 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         mAuthority = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String user = dataSnapshot.getValue(String.class);
+                String password = dataSnapshot.getValue(String.class);
+                mLastUser = user;
+                mLastUsedPassword = password;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void onStart() {
         super.onStart();
 
-        //Check if user is signed in (non-null) and update UI accordingly
-        FirebaseUser currentUser = mAuthority.getCurrentUser();
-        if (currentUser != null) {
-            showProgress(false);
+        if (mLastUsedPassword != null && mLastUser != null) {
+            mAuthTask = new UserLoginTask(mLastUser, mLastUsedPassword);
+            mAuthTask.execute((Void) null);
         }
-        //updateUI(currentUser);
+    }
 
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(LOGGED_IN_STATE, mLoggedInState);
+        outState.putString(PASSWORD_KEY, mLastUsedPassword);
+        outState.putString(USER_KEY, mLastUser);
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+
+        // Restore state members from saved instance
+        mLastUsedPassword = savedInstanceState.getString(PASSWORD_KEY);
+        mLastUser = savedInstanceState.getString(USER_KEY);
     }
 
     private void registerUser() {
@@ -123,12 +181,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         startActivityForResult(registerActivity, REGISTER_REQUEST);
     }
 
+    private String lilEmail = null;
+    private String lilPassword = null;
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i(TAG, "Entered onActivityResult()");
 
         if (requestCode == REGISTER_REQUEST && resultCode == RESULT_OK) {
             String email = data.getStringExtra("email");
             String password = data.getStringExtra("password");
+
+            Log.i(TAG, "Entered storing information.");
 
             mAuthority.createUserWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
@@ -139,6 +201,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         FirebaseUser user = mAuthority.getCurrentUser();
                         if (user != null) {
                             showProgress(false);
+
+
+                            /*DatabaseReference passwordsRef = mDatabase.child("passwords");
+
+                            Map<String, String> emailToPasswords = new HashMap<>();
+                            emailToPasswords.put(lilEmail, lilPassword);
+
+                            passwordsRef.setValue(emailToPasswords);*/
+
                         }
                     } else {
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -316,16 +387,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         Log.d(TAG, "signInWithEmail:success");
                         FirebaseUser user = mAuthority.getCurrentUser();
                         if (user != null) {
-                            Log.d(TAG, "mAuthority check: " + (mAuthority != null));
-
                             showProgress(true);
                             mSignInStatus = true;
-                            //this all works just fine
-                            Log.d(TAG, "status set to: " + mSignInStatus);
                         }
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithEmail:failure", task.getException());
                         Toast.makeText(LoginActivity.this, "Email or password is not valid.",
                                 Toast.LENGTH_LONG).show();
                         mSignInStatus = false;
@@ -343,12 +409,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 e.printStackTrace();
             }
 
-            // never makes it to here for some reason
-            Log.d(TAG, "makes it here");
-
-            if(mSignInStatus) {
-                Log.d(TAG, "status is true");
-            }
             return mSignInStatus;
         }
 
