@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class HomePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -69,6 +71,7 @@ public class HomePage extends AppCompatActivity
             i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_logout) {
             i = new Intent(this, LoginActivity.class);
+            FirebaseAuth.getInstance().signOut();
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
         startActivity(i);
