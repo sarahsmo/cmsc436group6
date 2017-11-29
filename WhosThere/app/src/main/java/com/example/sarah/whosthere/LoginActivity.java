@@ -36,6 +36,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,11 +56,11 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    //TODO - not safe privately
-    private static final String PASSWORD_KEY = "PASSWORD";
-    private static final String USER_KEY = "USER";
+    //For Debugging
     private static String TAG = "LOGIN_EMAIL";
 
+    //States
+    private static final String PASSWORD_KEY = "PASSWORD";
     //Registering
     static final int REGISTER_REQUEST = 1;
 
@@ -69,11 +70,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private UserLoginTask mAuthTask = null;
     private FirebaseAuth mAuthority = null;
 
-    private DatabaseReference mDatabase = null;
-
-    private String mLoggedInState;
-
-    private static String LOGGED_IN_STATE = "LOGGED_IN";
+    private DatabaseReference mUserToPassDatabase = null;
 
     // UI references.
     private EditText mEmailView;
@@ -87,11 +84,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // recovering the instance state
-        if (savedInstanceState != null) {
-            mLoggedInState = savedInstanceState.getString(LOGGED_IN_STATE);
-        }
 
         setContentView(R.layout.activity_login);
 
@@ -130,50 +122,62 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         mAuthority = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String user = dataSnapshot.getValue(String.class);
-                String password = dataSnapshot.getValue(String.class);
-                mLastUser = user;
-                mLastUsedPassword = password;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        mUserToPassDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     public void onStart() {
         super.onStart();
 
-        if (mLastUsedPassword != null && mLastUser != null) {
-            mAuthTask = new UserLoginTask(mLastUser, mLastUsedPassword);
-            mAuthTask.execute((Void) null);
-        }
+        //Fetches what data has been added in the database
+        mUserToPassDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+
+                    Toast.makeText(LoginActivity.this, "Loading your most recent account...",
+                            Toast.LENGTH_LONG).show();
+
+                   String email = mAuthority.getCurrentUser().getEmail();
+
+                   String firebaseEmail = (String) userSnapshot.child("email").getValue();
+                   String firebasePassword = (String) userSnapshot.child("password").getValue();
+
+                   if (email.equals(firebaseEmail)) {
+                        mLastUsedPassword = firebasePassword;
+                       //Get the most recent userID to UserLoginTask pair last signed in - Mike
+                       FirebaseUser currentUser = mAuthority.getCurrentUser();
+                       if (currentUser != null && mLastUsedPassword != null) {
+                           Log.d(TAG, mLastUsedPassword);
+                           mAuthTask = new UserLoginTask(currentUser.getEmail(), mLastUsedPassword);
+                           mAuthTask.execute((Void) null);
+                       }
+                   }
+
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString(LOGGED_IN_STATE, mLoggedInState);
-        outState.putString(PASSWORD_KEY, mLastUsedPassword);
-        outState.putString(USER_KEY, mLastUser);
-
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
-    }
+
+        outState.putString(PASSWORD_KEY, mLastUsedPassword);
+     }
+
 
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(savedInstanceState);
 
-
         // Restore state members from saved instance
         mLastUsedPassword = savedInstanceState.getString(PASSWORD_KEY);
-        mLastUser = savedInstanceState.getString(USER_KEY);
     }
 
     private void registerUser() {
@@ -181,14 +185,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         startActivityForResult(registerActivity, REGISTER_REQUEST);
     }
 
-    private String lilEmail = null;
-    private String lilPassword = null;
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == REGISTER_REQUEST && resultCode == RESULT_OK) {
-            String email = data.getStringExtra("email");
-            String password = data.getStringExtra("password");
+            final String email = data.getStringExtra("email");
+            final String password = data.getStringExtra("password");
 
             Log.i(TAG, "Entered storing information.");
 
@@ -200,16 +201,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         Log.d(TAG, "createUserWithEmail:success");
                         FirebaseUser user = mAuthority.getCurrentUser();
                         if (user != null) {
-                            showProgress(false);
+                            //Store the user data into the real-time database - Mike
+                            mUserToPassDatabase.push();
 
-
-                            /*DatabaseReference passwordsRef = mDatabase.child("passwords");
-
-                            Map<String, String> emailToPasswords = new HashMap<>();
-                            emailToPasswords.put(lilEmail, lilPassword);
-
-                            passwordsRef.setValue(emailToPasswords);*/
-
+                            String id = user.getUid();
+                            UserInformation userInfo = new UserInformation(email, password);
+                            mUserToPassDatabase.child(id).setValue(userInfo);
                         }
                     } else {
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -227,6 +224,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+
         if (mAuthTask != null) {
             return;
         }
@@ -282,8 +280,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            Log.d(TAG, "PROGRESS IS SHOWN");
-
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
