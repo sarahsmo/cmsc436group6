@@ -1,19 +1,12 @@
 package com.example.sarah.whosthere;
 
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,19 +14,20 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-public class FriendsList extends HomePage {
+import java.util.Arrays;
+
+public class FriendsPageActivity extends HomePage {
 
     //Button to connect to Facebook
     private LoginButton loginButton;
@@ -62,9 +56,8 @@ public class FriendsList extends HomePage {
         callbackManager = CallbackManager.Factory.create();
 
         //Enable permissions to view public profile and friends list
-        loginButton = (LoginButton)findViewById(R.id.login_button);
-        loginButton.setReadPermissions("public_profile");
-        loginButton.setReadPermissions("user_friends");
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("user_friends"));
 
         //If already logged into facebook account populate the friends list
         if(Profile.getCurrentProfile() != null) {
@@ -72,7 +65,7 @@ public class FriendsList extends HomePage {
         }
 
         //Log into facebook
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                populateFriendsList();
@@ -107,7 +100,7 @@ public class FriendsList extends HomePage {
                             JSONArray friends = response.getJSONObject().getJSONArray("data");
 
                             for(int i=0; i< friends.length(); i++) {
-                                TextView friend = new TextView(FriendsList.this);
+                                TextView friend = new TextView(FriendsPageActivity.this);
                                 friend.setText(friends.get(i).toString());
                                 friendsListLayout.addView(friend);
                             }

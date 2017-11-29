@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.sarah.whosthere.FriendsList"
+    tools:context="com.example.sarah.whosthere.FriendsPageActivity"
     tools:showIn="@layout/activity_friends_list">
 
     <com.facebook.login.widget.LoginButton
@@ -13,8 +13,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp" />
+        tools:layout_editor_absoluteX="103dp"
+        tools:layout_editor_absoluteY="40dp" />
 
     <TextView
         android:id="@+id/facebook_status"

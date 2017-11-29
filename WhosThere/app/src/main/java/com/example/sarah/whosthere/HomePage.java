@@ -2,9 +2,6 @@ package com.example.sarah.whosthere;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -64,7 +61,7 @@ public class HomePage extends AppCompatActivity
             i = new Intent(this, HomePage.class);
             i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_friends) {
-            i = new Intent(this, FriendsList.class);
+            i = new Intent(this, FriendsPageActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_settings) {
             i = new Intent(this, SettingsActivity.class);
