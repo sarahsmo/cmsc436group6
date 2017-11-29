@@ -60,14 +60,17 @@ public class HomePage extends AppCompatActivity
         if (id == R.id.nav_home) {
             // Handle the camera action
             i = new Intent(this, HomePage.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_friends) {
             i = new Intent(this, FriendsList.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_settings) {
             i = new Intent(this, SettingsActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_logout) {
-
+            i = new Intent(this, LoginActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
-        i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(i);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
