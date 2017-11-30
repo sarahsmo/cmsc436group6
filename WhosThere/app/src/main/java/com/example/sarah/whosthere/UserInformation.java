@@ -23,7 +23,7 @@ public class UserInformation {
     }
 
     public void setLocation() {
-        //TODO
+
     }
 
 }
