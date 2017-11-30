@@ -103,9 +103,9 @@ public class LocationActivity extends Activity implements LocationListener {
                     //String email = mAuthority.getCurrentUser().getEmail();
 
                      /*TODO - store data structure pulled from firebase as variable*/
-                    // some sort of data structure, list, HashMap<email string, location string>
-                    HashMap<String, String> friendlist =
-                            (HashMap<String, String>) userSnapshot.child("friendsList").getValue();
+                    // some sort of data structure, list, HashMap<email string, location>
+                    HashMap<String, Location> friendlist =
+                            (HashMap<String, Location>) userSnapshot.child("friendsList").getValue();
 
                      /*TODO - traverse through list data structure
                             1-  function calculate distance
@@ -118,9 +118,10 @@ public class LocationActivity extends Activity implements LocationListener {
                     Iterator friendListIterator = friendlist.keySet().iterator();
                     while(friendListIterator.hasNext()) {
                         String key=(String)friendListIterator.next();
-                        String value=(String)friendlist.get(key);
+                        Location value=friendlist.get(key);
 
                         //calculate function
+                        float distance = mLastLocationReading.distanceTo(value);
 
                         // display distance in miles on friendlist - update friendlist
 
@@ -217,4 +218,5 @@ public class LocationActivity extends Activity implements LocationListener {
     public void onProviderDisabled(String s) {
 
     }
+
 }
