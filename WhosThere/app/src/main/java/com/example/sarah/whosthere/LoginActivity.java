@@ -81,11 +81,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private String mLastUsedPassword;
     private String mLastUser;
 
+    private List<UserInformation> userInfoList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
+
+        userInfoList = new ArrayList<UserInformation>();
 
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
@@ -122,7 +126,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         mAuthority = FirebaseAuth.getInstance();
-        mUserToPassDatabase = FirebaseDatabase.getInstance().getReference();
+        mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("LocalDatabase");
     }
 
     public void onStart() {
@@ -135,16 +139,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
 
-                    Toast.makeText(LoginActivity.this, "Loading your most recent account...",
-                            Toast.LENGTH_LONG).show();
-
                    String email = mAuthority.getCurrentUser().getEmail();
 
                    String firebaseEmail = (String) userSnapshot.child("email").getValue();
                    String firebasePassword = (String) userSnapshot.child("password").getValue();
 
                    if (email.equals(firebaseEmail)) {
-                        mLastUsedPassword = firebasePassword;
+                       Toast.makeText(LoginActivity.this, "Loading your most recent account...",
+                               Toast.LENGTH_LONG).show();
+
+                       mLastUsedPassword = firebasePassword;
                        //Get the most recent userID to UserLoginTask pair last signed in - Mike
                        FirebaseUser currentUser = mAuthority.getCurrentUser();
                        if (currentUser != null && mLastUsedPassword != null) {
@@ -206,6 +210,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                             String id = user.getUid();
                             UserInformation userInfo = new UserInformation(email, password);
+                            //userInfoList.add(userInfo);
                             mUserToPassDatabase.child(id).setValue(userInfo);
                         }
                     } else {
@@ -415,6 +420,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 Intent i = new Intent(LoginActivity.this, HomePage.class);
+                
                 startActivity(i);
                 finish();
             } else {
