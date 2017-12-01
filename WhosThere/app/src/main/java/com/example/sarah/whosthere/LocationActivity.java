@@ -97,8 +97,6 @@ public class LocationActivity extends Activity implements LocationListener {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-
-                    /*TODO - get facebook email/username of requestor*/
                     // -> change this to facebook profile email
                     //String email = mAuthority.getCurrentUser().getEmail();
 
@@ -112,7 +110,7 @@ public class LocationActivity extends Activity implements LocationListener {
                             2- display distance in miles on friendlist
                             3- notify if within 5 miles
                             4- update marker in map
-                      */
+                     */
 
 
                     Iterator friendListIterator = friendlist.keySet().iterator();
