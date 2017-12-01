@@ -142,11 +142,12 @@ public class HomePage extends AppCompatActivity
 
             mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
 
-
             if(AccessToken.getCurrentAccessToken() != null) {
                 String userID = AccessToken.getCurrentAccessToken().getUserId();
                 mUserToPassDatabase.child(userID).child("Location").setValue(mLastLocationReading);
             }
+
+            mUserToPassDatabase = FirebaseDatabase.getInstance().getReference();
 
             mUserToPassDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -154,15 +155,18 @@ public class HomePage extends AppCompatActivity
 
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                         if(AccessToken.getCurrentAccessToken() != null) {
-                            String userID = AccessToken.getCurrentAccessToken().getUserId();
+                            String userFacebookID = AccessToken.getCurrentAccessToken().getUserId();
 
-                            ArrayList<String> friendsList =
-                                    (ArrayList<String>)userSnapshot.child(userID).child("FriendsList").getValue();
-                            for (String facebookID: friendsList) {
-                                Location friendLocation = (Location) userSnapshot.child(facebookID).child("Location").getValue();
-                                float distance = mLastLocationReading.distanceTo(friendLocation);
+                            if(userSnapshot.child(userFacebookID) != null) {
+                                ArrayList<String> friendsList =
+                                        (ArrayList<String>) userSnapshot.child(userFacebookID).child("FriendsList").getValue();
 
-                                //TODO -display distance
+                                for (String friendFacebookID : friendsList) {
+                                    Location friendLocation = (Location) userSnapshot.child(friendFacebookID).child("Location").getValue();
+                                    float distance = mLastLocationReading.distanceTo(friendLocation);
+
+                                    //TODO -display distance
+                                }
                             }
                         }
                     }
@@ -236,8 +240,8 @@ public class HomePage extends AppCompatActivity
             mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
 
             if(AccessToken.getCurrentAccessToken() != null) {
-                String userID = AccessToken.getCurrentAccessToken().getUserId();
-                mUserToPassDatabase.child(userID).child("Location").setValue(mLastLocationReading);
+                String userFacebookID = AccessToken.getCurrentAccessToken().getUserId();
+                mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
             }
         }
 
