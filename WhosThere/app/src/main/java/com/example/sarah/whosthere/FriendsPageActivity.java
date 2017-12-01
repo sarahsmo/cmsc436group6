@@ -91,16 +91,15 @@ public class FriendsPageActivity extends HomePage {
         //Enable permissions to view public profile, friends list, and location
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "user_location"));
 
+        newUser = true;
+        friendsList = new ArrayList<>();
+        friend_friendsList = new ArrayList<>();
+        addedFriends = new ArrayList<>();
 
         //If already logged into facebook account populate the friends list
         if(Profile.getCurrentProfile() != null) {
             populateFriendsList();
         }
-
-        newUser = true;
-        friendsList = new ArrayList<>();
-        friend_friendsList = new ArrayList<>();
-        addedFriends = new ArrayList<>();
 
         //Log into facebook
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -123,7 +122,14 @@ public class FriendsPageActivity extends HomePage {
                                 Log.i("USER ID MATCH", user_id);
                                 newUser = false;
                                 friendsList = (ArrayList<String>)user.child("FriendsList").getValue();
+                                if(friendsList == null) {
+                                    friendsList = new ArrayList<String>();
+                                }
                                 addedFriends = (ArrayList<String>)user.child("AddedFriends").getValue();
+                                if(addedFriends == null) {
+                                    addedFriends = new ArrayList<String>();
+                                }
+
                             }
                         }
                     }
@@ -140,8 +146,6 @@ public class FriendsPageActivity extends HomePage {
                     mUserToPassDatabase.push();
 
                     mUserToPassDatabase.child(user_id).child("Location").setValue(null);
-                    friendsList.add(user_id);
-                    addedFriends.add(user_id);
                     mUserToPassDatabase.child(user_id).child("FriendsList").setValue(friendsList);
                     mUserToPassDatabase.child(user_id).child("AddedFriends").setValue(addedFriends);
                 } else {
@@ -207,6 +211,8 @@ public class FriendsPageActivity extends HomePage {
                                 //profilePic.setImageBitmap(profilePicture);
                                 final Button addFriend = new Button(getApplicationContext());
 
+                                addFriend.setTag(friend_id);
+
                                 if(addedFriends!= null && addedFriends.contains(friend_id)) {
                                     addFriend.setText("Friends");
 
@@ -219,29 +225,30 @@ public class FriendsPageActivity extends HomePage {
                                     public void onClick(View view) {
                                         Log.i("ON CLICK", friend.toString());
 
-                                        /*
-                                        TODO: add current user to friendslist of specified user
-                                         */
-                                       // FirebaseUser user = mAuthority.getCurrentUser();
-
+                                        friend_id = (String) addFriend.getTag();
 
                                         mUserToPassDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot snapshot) {
-                                                Log.d("SNAPSHOT", snapshot.toString());
-                                                boolean found = false;
-                                                for(DataSnapshot user : snapshot.getChildren()) {
-                                                    Log.d("USER", user.getKey().toString());
-
-                                                    if(user.getKey().equals(friend_id)) {
-                                                        found = true;
-                                                        Log.i("USER ID MATCH", user_id);
-
-                                                        //add current user to friendslist of friend
-                                                        friend_friendsList = (ArrayList<String>)user.child("FriendsList").getValue();
-
-                                                    }
-                                                }
+                                                friend_friendsList = (ArrayList<String>) snapshot.child(friend_id).child("FriendsList").getValue();
+//                                                Log.d("SNAPSHOT", snapshot.toString());
+//                                                boolean found = false;
+//                                                for(DataSnapshot user : snapshot.getChildren()) {
+//                                                    Log.d("USER", user.getKey().toString());
+//
+//                                                    if(user.getKey().equals(friend_id)) {
+//                                                        found = true;
+//                                                        Log.i("USER ID MATCH", friend_id);
+//
+//                                                        //add current user to friendslist of friend
+//                                                        friend_friendsList = (ArrayList<String>)user.child("FriendsList").getValue();
+//
+//                                                        if(friend_friendsList!=null) {
+//                                                            Log.i("RECEIVED FRIENDS LIST", friend_friendsList.toString());
+//                                                        }
+//
+//                                                    }
+//                                                }
 
                                             }
 
@@ -258,6 +265,9 @@ public class FriendsPageActivity extends HomePage {
                                         }
                                         addedFriends.add(friend_id);
                                         //add current user to friend's list of friend
+                                        if(friend_friendsList == null) {
+                                            friend_friendsList = new ArrayList<>();
+                                        }
                                         friend_friendsList.add(user_id);
 
                                         mUserToPassDatabase.push();
