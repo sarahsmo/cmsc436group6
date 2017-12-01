@@ -140,12 +140,16 @@ public class HomePage extends AppCompatActivity
             //updates firebase when you go back into the app
             mAuthority = FirebaseAuth.getInstance();
 
+/*
+
+            this block of code is add onLocationChanged which is called by LocationListener
             mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
 
             if(AccessToken.getCurrentAccessToken() != null) {
                 String userID = AccessToken.getCurrentAccessToken().getUserId();
-                mUserToPassDatabase.child(userID).child("Location").setValue(mLastLocationReading);
+                mUserToPassDatabase.push().child(userID).child("Location").setValue(mLastLocationReading);
             }
+*/
 
             mUserToPassDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -241,7 +245,7 @@ public class HomePage extends AppCompatActivity
 
             if(AccessToken.getCurrentAccessToken() != null) {
                 String userFacebookID = AccessToken.getCurrentAccessToken().getUserId();
-                mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
+                mUserToPassDatabase.push().child(userFacebookID).child("Location").setValue(mLastLocationReading);
             }
         }
 
