@@ -164,7 +164,7 @@ public class HomePage extends AppCompatActivity
 
                                 //TODO -display distance
                             }
-                        
+                        }
                     }
                 }
                 @Override
