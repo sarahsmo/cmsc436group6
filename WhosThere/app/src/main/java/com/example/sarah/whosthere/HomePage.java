@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomePage extends AppCompatActivity
@@ -68,6 +69,7 @@ public class HomePage extends AppCompatActivity
             i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_logout) {
             i = new Intent(this, LoginActivity.class);
+            LoginManager.getInstance().logOut();
             FirebaseAuth.getInstance().signOut();
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
