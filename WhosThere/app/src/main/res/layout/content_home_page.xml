@@ -27,6 +27,7 @@
                 android:text="People within 500 feet" />
 
             <ListView
+                android:id="@+id/within500list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

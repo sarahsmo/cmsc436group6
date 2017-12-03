@@ -3,6 +3,7 @@ package com.example.sarah.whosthere;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -63,7 +64,6 @@ public class FriendsPageActivity extends HomePage {
 
     String friend_id;
     private List<String> friend_friendsList;
-
 
     Boolean newUser;
 

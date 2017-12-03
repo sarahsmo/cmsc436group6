@@ -18,6 +18,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.login.LoginManager;
 import com.facebook.AccessToken;
@@ -54,6 +57,9 @@ public class HomePage extends AppCompatActivity
     // default minimum distance between old and new readings.
     private float mMinDistance = 1000.0f;
 
+    private String userFacebookID;
+
+    private ArrayList<String> friendsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,14 @@ public class HomePage extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if(AccessToken.getCurrentAccessToken()!=null) {
+            userFacebookID = AccessToken.getCurrentAccessToken().getUserId();
+        }
+        else {
+            userFacebookID = null;
+        }
+        friendsList = new ArrayList<String>();
     }
 
     @Override
@@ -152,28 +166,29 @@ public class HomePage extends AppCompatActivity
             }
 */
 
-            mUserToPassDatabase = FirebaseDatabase.getInstance().getReference();
-
+            mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
             mUserToPassDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        if(AccessToken.getCurrentAccessToken() != null) {
-                            String userFacebookID = AccessToken.getCurrentAccessToken().getUserId();
-
-                            if(userSnapshot.child(userFacebookID) != null) {
-                                ArrayList<String> friendsList =
-                                        (ArrayList<String>) userSnapshot.child(userFacebookID).child("FriendsList").getValue();
-
-                                for (String friendFacebookID : friendsList) {
-                                    Location friendLocation = (Location) userSnapshot.child(friendFacebookID).child("Location").getValue();
-                                    float distance = mLastLocationReading.distanceTo(friendLocation);
-
-                                    //TODO -display distance
-                                }
-                            }
+                    if(userFacebookID!=null) {
+                        friendsList = (ArrayList<String>) dataSnapshot.child(userFacebookID).child("FriendsList").getValue();
+                        if(friendsList == null) {
+                            friendsList = new ArrayList<String>();
                         }
+                    }
+
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            float distance = 0;
+                            if(friendsList.contains(userSnapshot.getKey())) {
+                                Location friendLocation = (Location) userSnapshot.child("Location").getValue();
+                                if(friendLocation != null) {
+                                    distance = mLastLocationReading.distanceTo(friendLocation);
+                                }
+
+                                //TODO - display distance
+
+                            }
                     }
                 }
                 @Override
