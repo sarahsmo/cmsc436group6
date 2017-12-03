@@ -51,7 +51,6 @@ public class HomePage extends AppCompatActivity
 
     private Location mLastLocationReading;
 
-
     // default minimum time between new readings
     private long mMinTime = 5000;
 
@@ -61,7 +60,6 @@ public class HomePage extends AppCompatActivity
     private String userFacebookID;
 
     private ArrayList<String> friendsList;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +86,6 @@ public class HomePage extends AppCompatActivity
             userFacebookID = null;
         }
         friendsList = new ArrayList<String>();
-
     }
 
     @Override
@@ -170,7 +167,6 @@ public class HomePage extends AppCompatActivity
 */
 
             mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
-
             mUserToPassDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

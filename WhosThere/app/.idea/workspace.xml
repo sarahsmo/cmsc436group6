@@ -35,7 +35,6 @@
       <file leaf-file-name="FriendsPageActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/sarah/whosthere/FriendsPageActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
             <state relative-caret-position="570">
               <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
               <folding>
@@ -46,18 +45,6 @@
                 <element signature="e#2687#2688#0" expanded="true" />
                 <element signature="e#3240#4041#0" expanded="true" />
                 <element signature="e#4040#4041#0" expanded="true" />
-=======
-            <state relative-caret-position="216">
-              <caret line="227" column="61" lean-forward="false" selection-start-line="227" selection-start-column="61" selection-end-line="227" selection-end-column="61" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#2531#2562#0" expanded="true" />
-                <element signature="e#2564#2596#0" expanded="true" />
-                <element signature="e#6730#12689#0" expanded="true" />
-                <element signature="e#8524#12269#0" expanded="true" />
-                <element signature="e#12268#12269#0" expanded="true" />
-                <element signature="e#12688#12689#0" expanded="true" />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
               </folding>
             </state>
           </provider>
@@ -118,15 +105,12 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/sarah/whosthere/HomePage.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="870">
-<<<<<<< HEAD
               <caret line="69" column="54" lean-forward="false" selection-start-line="69" selection-start-column="54" selection-end-line="69" selection-end-column="54" />
               <folding>
                 <marker date="1512151191000" expanded="true" signature="2760:3060" ph="{...}" />
               </folding>
-=======
               <caret line="70" column="54" lean-forward="false" selection-start-line="70" selection-start-column="54" selection-end-line="70" selection-end-column="54" />
               <folding />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
             </state>
           </provider>
         </entry>
@@ -1942,13 +1926,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-<<<<<<< HEAD
     <option name="x" value="18" />
     <option name="y" value="58" />
-=======
     <option name="x" value="44" />
     <option name="y" value="65" />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
     <option name="width" value="1400" />
     <option name="height" value="799" />
   </component>
@@ -1979,8 +1960,6 @@
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidModuleNode" />
             </PATH_ELEMENT>
-<<<<<<< HEAD
-=======
             <PATH_ELEMENT>
               <option name="myItemId" value="res" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidResFolderNode" />
@@ -2003,7 +1982,6 @@
               <option name="myItemId" value="layout" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -2018,13 +1996,10 @@
               <option name="myItemId" value="java" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidSourceTypeNode" />
             </PATH_ELEMENT>
-<<<<<<< HEAD
-=======
             <PATH_ELEMENT>
               <option name="myItemId" value="whosthere" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -2152,11 +2127,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-<<<<<<< HEAD
         <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1512151307578" />
-=======
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1512147431071" />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -2204,11 +2175,7 @@
       </Profilers>
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-<<<<<<< HEAD
         <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1512151307578" />
-=======
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1512147431071" />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2370,11 +2337,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-<<<<<<< HEAD
         <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1512151307583" />
-=======
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1512147431073" />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
       </method>
     </configuration>
     <list size="1">
@@ -2413,12 +2376,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-<<<<<<< HEAD
-    <frame x="18" y="58" width="1400" height="799" extended-state="0" />
-=======
     <frame x="44" y="65" width="1400" height="799" extended-state="0" />
     <editor active="true" />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
     <layout>
       <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -2431,20 +2390,13 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-<<<<<<< HEAD
+
       <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14641288" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-=======
-      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.43484625" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-<<<<<<< HEAD
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2496318" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-=======
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2496318" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -2475,21 +2427,12 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-<<<<<<< HEAD
             <element signature="e#1547#1578#0" expanded="true" />
             <element signature="e#1580#1612#0" expanded="true" />
             <element signature="e#2635#2636#0" expanded="true" />
             <element signature="e#2687#2688#0" expanded="true" />
             <element signature="e#3240#4041#0" expanded="true" />
             <element signature="e#4040#4041#0" expanded="true" />
-=======
-            <element signature="e#2531#2562#0" expanded="true" />
-            <element signature="e#2564#2596#0" expanded="true" />
-            <element signature="e#6730#12689#0" expanded="true" />
-            <element signature="e#8524#12269#0" expanded="true" />
-            <element signature="e#12268#12269#0" expanded="true" />
-            <element signature="e#12688#12689#0" expanded="true" />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
           </folding>
         </state>
       </provider>
@@ -2541,13 +2484,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="870">
           <caret line="70" column="54" lean-forward="false" selection-start-line="70" selection-start-column="54" selection-end-line="70" selection-end-column="54" />
-<<<<<<< HEAD
           <folding>
             <marker date="1512151191000" expanded="true" signature="2760:3060" ph="{...}" />
           </folding>
-=======
-          <folding />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
         </state>
       </provider>
     </entry>
@@ -2583,21 +2522,12 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-<<<<<<< HEAD
             <element signature="e#1547#1578#0" expanded="true" />
             <element signature="e#1580#1612#0" expanded="true" />
             <element signature="e#2635#2636#0" expanded="true" />
             <element signature="e#2687#2688#0" expanded="true" />
             <element signature="e#3240#4041#0" expanded="true" />
             <element signature="e#4040#4041#0" expanded="true" />
-=======
-            <element signature="e#2531#2562#0" expanded="true" />
-            <element signature="e#2564#2596#0" expanded="true" />
-            <element signature="e#6730#12689#0" expanded="true" />
-            <element signature="e#8524#12269#0" expanded="true" />
-            <element signature="e#12268#12269#0" expanded="true" />
-            <element signature="e#12688#12689#0" expanded="true" />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
           </folding>
         </state>
       </provider>
@@ -2649,13 +2579,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="885">
           <caret line="70" column="12" lean-forward="false" selection-start-line="70" selection-start-column="12" selection-end-line="70" selection-end-column="12" />
-<<<<<<< HEAD
           <folding>
             <marker date="1512151191000" expanded="true" signature="2760:3060" ph="{...}" />
           </folding>
-=======
-          <folding />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
         </state>
       </provider>
     </entry>
@@ -2740,15 +2666,10 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/sarah/whosthere/HomePage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="870">
-<<<<<<< HEAD
           <caret line="69" column="54" lean-forward="false" selection-start-line="69" selection-start-column="54" selection-end-line="69" selection-end-column="54" />
           <folding>
             <marker date="1512151191000" expanded="true" signature="2760:3060" ph="{...}" />
           </folding>
-=======
-          <caret line="70" column="54" lean-forward="false" selection-start-line="70" selection-start-column="54" selection-end-line="70" selection-end-column="54" />
-          <folding />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
         </state>
       </provider>
     </entry>
@@ -2789,18 +2710,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/sarah/whosthere/FriendsPageActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="570">
-          <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1547#1578#0" expanded="true" />
-            <element signature="e#1580#1612#0" expanded="true" />
-            <element signature="e#2635#2636#0" expanded="true" />
-            <element signature="e#2687#2688#0" expanded="true" />
-            <element signature="e#3240#4041#0" expanded="true" />
-            <element signature="e#4040#4041#0" expanded="true" />
-=======
         <state relative-caret-position="216">
           <caret line="227" column="61" lean-forward="false" selection-start-line="227" selection-start-column="61" selection-end-line="227" selection-end-column="61" />
           <folding>
@@ -2811,7 +2720,6 @@
             <element signature="e#8524#12269#0" expanded="true" />
             <element signature="e#12268#12269#0" expanded="true" />
             <element signature="e#12688#12689#0" expanded="true" />
->>>>>>> c05e8d681d54d87f282d878a368d67a9ea941260
           </folding>
         </state>
       </provider>
