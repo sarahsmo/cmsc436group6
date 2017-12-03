@@ -13,6 +13,18 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.content.ContentResolver;
 import android.provider.Settings;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by JustineSim on 11/20/17.
@@ -32,6 +44,9 @@ public class LocationActivity extends Activity implements LocationListener {
 
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
+    private LoginActivity.UserLoginTask mAuthTask = null;
+    private FirebaseAuth mAuthority = null;
+    private DatabaseReference mUserFriendsDatabase = null;
 
     private Location mLastLocationReading;
 
@@ -49,6 +64,11 @@ public class LocationActivity extends Activity implements LocationListener {
         /*Create LocationManager instance*/
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+
+        //create map here
+
+
+
     }
 
     public final static  int MY_PERMISSIONS_LOCATION= 4;
@@ -56,8 +76,10 @@ public class LocationActivity extends Activity implements LocationListener {
     @Override
     protected void onResume() {
         super.onResume();
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), "android.permission.ACCESS_FINE_LOCATION") != PackageManager.PERMISSION_GRANTED
-                ||ContextCompat.checkSelfPermission(getApplicationContext(), "android.permission.ACCESS_COARSE_LOCATION") != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                "android.permission.ACCESS_FINE_LOCATION") != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(getApplicationContext(),
+                "android.permission.ACCESS_COARSE_LOCATION") != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(LocationActivity.this,
                     new String[]{"android.permission.ACCESS_FINE_LOCATION",
@@ -66,6 +88,55 @@ public class LocationActivity extends Activity implements LocationListener {
         }else {
             getLocationUpdates();
         }
+
+        mAuthority = FirebaseAuth.getInstance();
+        mUserFriendsDatabase = FirebaseDatabase.getInstance().getReference("Facebook Friends");
+
+        mUserFriendsDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    // -> change this to facebook profile email
+                    //String email = mAuthority.getCurrentUser().getEmail();
+
+                     /*TODO - store data structure pulled from firebase as variable*/
+                    // some sort of data structure, list, HashMap<email string, location>
+                    HashMap<String, Location> friendlist =
+                            (HashMap<String, Location>) userSnapshot.child("friendsList").getValue();
+
+                     /*TODO - traverse through list data structure
+                            1-  function calculate distance
+                            2- display distance in miles on friendlist
+                            3- notify if within 5 miles
+                            4- update marker in map
+                     */
+
+
+                    Iterator friendListIterator = friendlist.keySet().iterator();
+                    while(friendListIterator.hasNext()) {
+                        String key=(String)friendListIterator.next();
+                        Location value=friendlist.get(key);
+
+                        //calculate function
+                        float distance = mLastLocationReading.distanceTo(value);
+
+                        // display distance in miles on friendlist - update friendlist
+
+                        // notify if within 5 miles
+
+                        // update marker in map
+                    }
+
+
+
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -90,12 +161,9 @@ public class LocationActivity extends Activity implements LocationListener {
         }
     }
 
-
-
     private long ageInMilliseconds(Location location) {
         return System.currentTimeMillis() - location.getTime();
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -148,4 +216,5 @@ public class LocationActivity extends Activity implements LocationListener {
     public void onProviderDisabled(String s) {
 
     }
+
 }
