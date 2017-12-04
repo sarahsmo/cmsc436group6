@@ -62,6 +62,8 @@ public class HomePage extends AppCompatActivity
     private ArrayList<String> friendsList;
     private String fireBaseLocation;
 
+    private HashMap<String, Integer> friendDist;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "On Create Called");
@@ -101,6 +103,7 @@ public class HomePage extends AppCompatActivity
 
 
         friendsList = new ArrayList<String>();
+        friendDist = new HashMap<>();
     }
 
     @Override
@@ -129,13 +132,10 @@ public class HomePage extends AppCompatActivity
         if (id == R.id.nav_home) {
             // Handle the camera action
             i = new Intent(this, HomePage.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_friends) {
             i = new Intent(this, FriendsPageActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_settings) {
             i = new Intent(this, SettingsActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_logout) {
             i = new Intent(this, LoginActivity.class);
             LoginManager.getInstance().logOut();
@@ -177,13 +177,17 @@ public class HomePage extends AppCompatActivity
                 userFacebookID = AccessToken.getCurrentAccessToken().getUserId();
             }
 
-            Log.i(TAG, "User Facebook Null");
             if(userFacebookID != null) {
                 Log.i(TAG, "User Facebook Not Null");
                 mUserToPassDatabase.push();
                 /*String mLastLocationReadingString = Double.toString(mLastLocationReading.getLatitude()) + "," +
                         Double.toString(mLastLocationReading.getLongitude());*/
                 Log.i(TAG, "Set Location");
+                if(mLastLocationReading == null){
+                    Log.i(TAG, "location is NULL");
+                }else{
+                    Log.i(TAG, "location is: " + mLastLocationReading.toString());
+                }
                 mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
             }
 
@@ -195,33 +199,33 @@ public class HomePage extends AppCompatActivity
 
                             if(userSnapshot.getKey().equals(userFacebookID)) {
 
-
                                 friendsList = (ArrayList<String>)userSnapshot.child("FriendsList").getValue();
                                 if(friendsList != null) {
-                                    for (String friendFacebookID : friendsList) {
-                                        for(DataSnapshot friendSnapshot : dataSnapshot.getChildren()) {
-                                            if(friendSnapshot.getKey().equals(friendFacebookID)) {
+                                    for(DataSnapshot friendSnapshot : dataSnapshot.getChildren()){
+                                        if(friendsList.contains(friendSnapshot.getKey())){
+                                            float distance = 0;
+                                            Double latitude = (Double) friendSnapshot.child("Location").child("latitude").getValue();
+                                            Double longitude = (Double) friendSnapshot.child("Location").child("longitude").getValue();
 
-                                                float distance = 0;
-                                                Double latitude = (Double) userSnapshot.child("Location").child("latitude").getValue();
-                                                Double longitude = (Double) userSnapshot.child("Location").child("longitude").getValue();
-                                                Location friendLocation = new Location("");
+                                            Location friendLocation = null;
+
+                                            if(latitude!=null && longitude!=null) {
+                                                friendLocation = new Location("");
                                                 friendLocation.setLatitude(latitude);
                                                 friendLocation.setLongitude(longitude);
-
-                                                if(friendLocation != null) {
-                                                    distance = mLastLocationReading.distanceTo(friendLocation);
-                                                }
-
-                                                //TODO - display distance
-
                                             }
+
+                                            if(friendLocation != null) {
+                                                distance = mLastLocationReading.distanceTo(friendLocation);
+                                            }
+
+                                            //TODO - display distance
+                                            distance = friendDist.get(friendSnapshot.getKey());
                                         }
-
                                     }
-
                                 }
                             }
+                            break;
                     }
                 }
                 @Override
@@ -237,12 +241,18 @@ public class HomePage extends AppCompatActivity
     private void getLocationUpdates()
     {
         try {
+            Log.i(TAG, "Get Location Updates Method Enter");
 
             //  Check GPS_PROVIDER for an existing location reading.
             // Only keep this last reading if it is fresh - less than 5 minutes old.
             Location lastKnownLocation =
                     mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(lastKnownLocation == null){
+                Log.i(TAG, "Last Known Location Is Null");
+            }
+            //Log.i(TAG, "Last Known Location: " + lastKnownLocation.toString());
             if(lastKnownLocation != null && ageInMilliseconds(lastKnownLocation) < FIVE_MINS) {
+                Log.i(TAG, "Get Location Updates If Statement Good");
                 mLastLocationReading = lastKnownLocation;
             }
 
@@ -284,6 +294,7 @@ public class HomePage extends AppCompatActivity
         @Override
         public void onLocationChanged(Location currentLocation) {
 
+            Log.i(TAG, "ON LOCATION CHANGED");
 
             if(mLastLocationReading == null || ageInMilliseconds(currentLocation)
                     < ageInMilliseconds(mLastLocationReading)) {

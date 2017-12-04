@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -67,6 +68,8 @@ public class FriendsPageActivity extends HomePage {
 
     Boolean newUser;
 
+    AccessTokenTracker accessTokenTracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +99,22 @@ public class FriendsPageActivity extends HomePage {
         friend_friendsList = new ArrayList<>();
         addedFriends = new ArrayList<>();
 
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
+                                                       AccessToken currentAccessToken) {
+                if (currentAccessToken == null) {
+                    Log.i("LOOGOUT", "user logged out");
+                    friendsListLayout.removeAllViewsInLayout();
+                }
+            }
+        };
+
+        accessTokenTracker.startTracking();
+
         //If already logged into facebook account populate the friends list
         if(Profile.getCurrentProfile() != null) {
+            newUser = false;
             populateFriendsList();
         }
 
@@ -111,6 +128,8 @@ public class FriendsPageActivity extends HomePage {
                 token = loginResult.getAccessToken().getToken();
 
                 mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
+
+                mUserToPassDatabase.push();
 
                 mUserToPassDatabase.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -322,6 +341,7 @@ public class FriendsPageActivity extends HomePage {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
 
 
 }
