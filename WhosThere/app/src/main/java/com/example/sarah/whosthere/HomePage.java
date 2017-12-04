@@ -205,9 +205,14 @@ public class HomePage extends AppCompatActivity
                                                 float distance = 0;
                                                 Double latitude = (Double) userSnapshot.child("Location").child("latitude").getValue();
                                                 Double longitude = (Double) userSnapshot.child("Location").child("longitude").getValue();
-                                                Location friendLocation = new Location("");
-                                                friendLocation.setLatitude(latitude);
-                                                friendLocation.setLongitude(longitude);
+
+                                                Location friendLocation = null;
+
+                                                if(latitude!=null && longitude!=null) {
+                                                    friendLocation = new Location("");
+                                                    friendLocation.setLatitude(latitude);
+                                                    friendLocation.setLongitude(longitude);
+                                                }
 
                                                 if(friendLocation != null) {
                                                     distance = mLastLocationReading.distanceTo(friendLocation);
