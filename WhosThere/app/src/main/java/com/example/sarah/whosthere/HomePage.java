@@ -63,6 +63,8 @@ public class HomePage extends AppCompatActivity
     private String fireBaseLocation;
 
     private HashMap<String, Integer> friendDist;
+    private Location mInitialLocation;
+    private Boolean mFirstTime = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +187,18 @@ public class HomePage extends AppCompatActivity
                 Log.i(TAG, "Set Location");
                 if(mLastLocationReading == null){
                     Log.i(TAG, "location is NULL");
+                    if(mFirstTime) {
+                        mInitialLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if(mInitialLocation == null) {
+                            Log.i(TAG, " initial location is NULL");
+                        } else {
+                            Log.i(TAG, "initial location is: " + mInitialLocation.toString());
+                            mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mInitialLocation);
+                            mFirstTime = false;
+                        }
+
+                    }
+
                 }else{
                     Log.i(TAG, "location is: " + mLastLocationReading.toString());
                 }
