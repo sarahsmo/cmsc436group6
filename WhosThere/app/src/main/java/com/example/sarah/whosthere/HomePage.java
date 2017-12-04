@@ -202,7 +202,7 @@ public class HomePage extends AppCompatActivity
                 }else{
                     Log.i(TAG, "location is: " + mLastLocationReading.toString());
                 }
-                mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
+                //mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
             }
 
             mUserToPassDatabase.addValueEventListener(new ValueEventListener() {
