@@ -60,6 +60,7 @@ public class HomePage extends AppCompatActivity
     private String userFacebookID;
 
     private ArrayList<String> friendsList;
+    private String fireBaseLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,13 +79,25 @@ public class HomePage extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        getLocationUpdates();
 
         if(AccessToken.getCurrentAccessToken()!=null) {
             userFacebookID = AccessToken.getCurrentAccessToken().getUserId();
+
+            mAuthority = FirebaseAuth.getInstance();
+            mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
+            mUserToPassDatabase.push();
+
+            /*String mLastLocationReadingString = Double.toString(mLastLocationReading.getLatitude()) + "," +
+                    Double.toString(mLastLocationReading.getLongitude());*/
+            mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
+
         }
         else {
             userFacebookID = null;
         }
+
+
         friendsList = new ArrayList<String>();
     }
 
@@ -154,40 +167,49 @@ public class HomePage extends AppCompatActivity
 
             //updates firebase when you go back into the app
             mAuthority = FirebaseAuth.getInstance();
-
-/*
-
-            this block of code is add onLocationChanged which is called by LocationListener
             mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
 
-            if(AccessToken.getCurrentAccessToken() != null) {
-                String userID = AccessToken.getCurrentAccessToken().getUserId();
-                mUserToPassDatabase.push().child(userID).child("Location").setValue(mLastLocationReading);
+            if(userFacebookID != null) {
+                mUserToPassDatabase.push();
+                /*String mLastLocationReadingString = Double.toString(mLastLocationReading.getLatitude()) + "," +
+                        Double.toString(mLastLocationReading.getLongitude());*/
+                mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
             }
-*/
 
-            mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
             mUserToPassDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    if(userFacebookID!=null) {
-                        friendsList = (ArrayList<String>) dataSnapshot.child(userFacebookID).child("FriendsList").getValue();
-                        if(friendsList == null) {
-                            friendsList = new ArrayList<String>();
-                        }
-                    }
-
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                            float distance = 0;
-                            if(friendsList.contains(userSnapshot.getKey())) {
-                                Location friendLocation = (Location) userSnapshot.child("Location").getValue();
-                                if(friendLocation != null) {
-                                    distance = mLastLocationReading.distanceTo(friendLocation);
+
+                            if(userSnapshot.getKey().equals(userFacebookID)) {
+
+
+                                friendsList = (ArrayList<String>)userSnapshot.child("FriendsList").getValue();
+                                if(friendsList != null) {
+                                    for (String friendFacebookID : friendsList) {
+                                        for(DataSnapshot friendSnapshot : dataSnapshot.getChildren()) {
+                                            if(friendSnapshot.getKey().equals(friendFacebookID)) {
+
+                                                float distance = 0;
+                                                Double latitude = (Double) userSnapshot.child("Location").child("latitude").getValue();
+                                                Double longitude = (Double) userSnapshot.child("Location").child("longitude").getValue();
+                                                Location friendLocation = new Location("");
+                                                friendLocation.setLatitude(latitude);
+                                                friendLocation.setLongitude(longitude);
+
+                                                if(friendLocation != null) {
+                                                    distance = mLastLocationReading.distanceTo(friendLocation);
+                                                }
+
+                                                //TODO - display distance
+
+                                            }
+                                        }
+
+                                    }
+
                                 }
-
-                                //TODO - display distance
-
                             }
                     }
                 }
@@ -247,21 +269,27 @@ public class HomePage extends AppCompatActivity
     }
 
     LocationListener locationListener = new LocationListener() {
+
         @Override
         public void onLocationChanged(Location currentLocation) {
+
 
             if(mLastLocationReading == null || ageInMilliseconds(currentLocation)
                     < ageInMilliseconds(mLastLocationReading)) {
                 mLastLocationReading = currentLocation;
             }
 
+            if(AccessToken.getCurrentAccessToken()!=null) {
+                userFacebookID = AccessToken.getCurrentAccessToken().getUserId();
             //updates firebase when your location changes
-            mAuthority = FirebaseAuth.getInstance();
-            mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
+                mAuthority = FirebaseAuth.getInstance();
+                mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
 
-            if(AccessToken.getCurrentAccessToken() != null) {
-                String userFacebookID = AccessToken.getCurrentAccessToken().getUserId();
-                mUserToPassDatabase.push().child(userFacebookID).child("Location").setValue(mLastLocationReading);
+                //String userFacebookID = AccessToken.getCurrentAccessToken().getUserId();
+                /*String mLastLocationReadingString = Double.toString(mLastLocationReading.getLatitude()) + "," +
+                        Double.toString(mLastLocationReading.getLongitude());*/
+                mUserToPassDatabase.push();
+                mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
             }
         }
 
