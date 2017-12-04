@@ -64,6 +64,7 @@ public class HomePage extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "On Create Called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -90,6 +91,7 @@ public class HomePage extends AppCompatActivity
 
             /*String mLastLocationReadingString = Double.toString(mLastLocationReading.getLatitude()) + "," +
                     Double.toString(mLastLocationReading.getLongitude());*/
+            Log.i(TAG, "Set Location");
             mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
 
         }
@@ -152,6 +154,7 @@ public class HomePage extends AppCompatActivity
 
     @Override
     protected void onResume() {
+        Log.i(TAG, "On Resume Called");
         super.onResume();
         if (ContextCompat.checkSelfPermission(getApplicationContext(),
                 "android.permission.ACCESS_FINE_LOCATION") != PackageManager.PERMISSION_GRANTED
@@ -163,16 +166,24 @@ public class HomePage extends AppCompatActivity
                             "android.permission.ACCESS_COARSE_LOCATION"},
                     MY_PERMISSIONS_LOCATION);
         }else {
+            Log.i(TAG, "Get Location Updates");
             getLocationUpdates();
 
             //updates firebase when you go back into the app
             mAuthority = FirebaseAuth.getInstance();
             mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
 
+            if(AccessToken.getCurrentAccessToken()!= null) {
+                userFacebookID = AccessToken.getCurrentAccessToken().getUserId();
+            }
+
+            Log.i(TAG, "User Facebook Null");
             if(userFacebookID != null) {
+                Log.i(TAG, "User Facebook Not Null");
                 mUserToPassDatabase.push();
                 /*String mLastLocationReadingString = Double.toString(mLastLocationReading.getLatitude()) + "," +
                         Double.toString(mLastLocationReading.getLongitude());*/
+                Log.i(TAG, "Set Location");
                 mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
             }
 
