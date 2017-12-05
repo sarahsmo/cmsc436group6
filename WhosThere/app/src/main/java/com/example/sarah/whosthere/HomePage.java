@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -140,6 +141,7 @@ public class HomePage extends AppCompatActivity
         if (id == R.id.nav_home) {
             // Handle the camera action
             i = new Intent(this, HomePage.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_friends) {
             i = new Intent(this, FriendsPageActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -264,6 +266,7 @@ public class HomePage extends AppCompatActivity
                                 break;
                             }
                     }
+                    updateView();
                 }
 
 
@@ -275,20 +278,24 @@ public class HomePage extends AppCompatActivity
                         Log.i(TAG, "Distances is not empty: " + distances.firstKey().toString());
                     }
 
+                    Log.i(TAG, "Current View: " + findViewById(android.R.id.content).toString());
+
                     //distances.put(1F, Arrays.asList("Bob", "Mary"));
                     //distances.put(300F, Arrays.asList("Dick", "Jane"));
                     //distances.put(3000F, Arrays.asList("Sue", "Al", "Frank"));
+                    //LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_home_page, null);
 
                     TextView people20 = (TextView) findViewById(R.id.within20miles);
-                    if(people20 != null) people20.setText("");
+                    if(people20 == null) return;
+                    people20.setText("");
                     TextView people10 = (TextView) findViewById(R.id.within10miles);
-                    if(people10 != null) people10.setText("");
+                    people10.setText("");
                     TextView people5 = (TextView) findViewById(R.id.within5miles);
-                    if(people5 != null) people5.setText("");
+                    people5.setText("");
                     TextView people1 = (TextView) findViewById(R.id.within1mile);
-                    if(people1 != null) people1.setText("");
+                    people1.setText("");
                     TextView people500f = (TextView) findViewById(R.id.within500feet);
-                    if(people500f != null) people500f.setText("");
+                    people500f.setText("");
 
                     for(Map.Entry<Float, List<String>> entry : distances.entrySet()){
                         Float miles = entry.getKey() * 0.000621371F;
