@@ -191,8 +191,8 @@ public class FriendsPageActivity extends HomePage {
                     mUserToPassDatabase.push();
 
                     mUserToPassDatabase.child(user_id).child("Name").setValue(name);
-                    mUserToPassDatabase.child(user_id).child("FriendsList").setValue(friendsList);
-                    mUserToPassDatabase.child(user_id).child("AddedFriends").setValue(addedFriends);
+                    //mUserToPassDatabase.child(user_id).child("FriendsList").setValue(friendsList);
+                    //mUserToPassDatabase.child(user_id).child("AddedFriends").setValue(addedFriends);
 
                 } else {
                     Log.d("RETURNING USER", "ALREADY EXISTS IN DATABASE");

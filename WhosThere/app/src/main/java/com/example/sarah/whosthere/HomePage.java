@@ -33,10 +33,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -210,22 +214,30 @@ public class HomePage extends AppCompatActivity
 
             mUserToPassDatabase.addValueEventListener(new ValueEventListener() {
 
-                TreeMap<Float, LinkedList<String>> distances = new TreeMap<Float, LinkedList<String>>();
+                TreeMap<Float, List<String>> distances = new TreeMap<Float, List<String>>();
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.i(TAG, "On data change");
 
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            Log.i(TAG, "user snapshot for loop");
 
                             if(userSnapshot.getKey().equals(userFacebookID)) {
+                                Log.i(TAG, "found match");
 
                                 friendsList = (ArrayList<String>)userSnapshot.child("FriendsList").getValue();
                                 if(friendsList != null) {
+                                    Log.i(TAG, "Friends List is Not Null");
+
                                     for(DataSnapshot friendSnapshot : dataSnapshot.getChildren()){
+                                        Log.i(TAG, "Friendsnap " + friendSnapshot.getKey());
                                         if(friendsList.contains(friendSnapshot.getKey())){
                                             float distance = 0;
                                             Double latitude = (Double) friendSnapshot.child("Location").child("latitude").getValue();
+                                            Log.i(TAG, "Lat: " + latitude);
                                             Double longitude = (Double) friendSnapshot.child("Location").child("longitude").getValue();
+                                            Log.i(TAG, "Long: " + longitude);
 
                                             Location friendLocation = null;
 
@@ -235,58 +247,82 @@ public class HomePage extends AppCompatActivity
                                                 friendLocation.setLongitude(longitude);
                                             }
 
-                                            if(friendLocation != null) {
+                                            if(friendLocation != null && mLastLocationReading != null) {
+                                                Log.i(TAG, "entered friendLocation");
                                                 distance = mLastLocationReading.distanceTo(friendLocation);
+                                                Log.i(TAG, "Dist: " + distance);
                                                 if(!distances.containsKey(distance)){
                                                     distances.put(distance, new LinkedList<String>());
                                                 }
-
+                                                Log.i(TAG, "Dist addeded ");
                                                 distances.get(distance).add((String) friendSnapshot.child("Name").getValue());
                                             }
                                         }
                                     }
                                 }
+                                updateView();
+                                break;
                             }
-                            updateView();
-                            break;
                     }
                 }
 
 
                 private void updateView(){
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, new LinkedList<String>());
+                    if(distances.isEmpty()){
+                        Log.i(TAG, "Distances is empty");
+                    }else{
+                        Log.i(TAG, "Distances is not empty: " + distances.firstKey().toString());
+                    }
 
-                    for(Map.Entry<Float, LinkedList<String>> entry : distances.entrySet()){
-                        double miles = entry.getKey() * 0.000621371;
-                        ListView view;
+                    //distances.put(1F, Arrays.asList("Bob", "Mary"));
+                    //distances.put(300F, Arrays.asList("Dick", "Jane"));
+                    //distances.put(3000F, Arrays.asList("Sue", "Al", "Frank"));
 
-                        if(miles > 20){
-                            continue;
+                    TextView people20 = (TextView) findViewById(R.id.within20miles);
+                    if(people20 != null) people20.setText("");
+                    TextView people10 = (TextView) findViewById(R.id.within10miles);
+                    if(people10 != null) people10.setText("");
+                    TextView people5 = (TextView) findViewById(R.id.within5miles);
+                    if(people5 != null) people5.setText("");
+                    TextView people1 = (TextView) findViewById(R.id.within1mile);
+                    if(people1 != null) people1.setText("");
+                    TextView people500f = (TextView) findViewById(R.id.within500feet);
+                    if(people500f != null) people500f.setText("");
+
+                    for(Map.Entry<Float, List<String>> entry : distances.entrySet()){
+                        Float miles = entry.getKey() * 0.000621371F;
+
+                        if(miles <= 0.095){
+                            for(String name : entry.getValue()){
+                                people500f.append(name + '\n');
+                            }
                         }
-                        else if(miles > 10){
-                            //They're within 20 miles
-                            view = (ListView) findViewById(R.id.within20miles);
+                        else if(miles <= 1){
+                            //They're within 1 mile
+                            for(String name : entry.getValue()){
+                                people1.append(name + '\n');
+                            }
                         }
-                        else if(miles > 5){
-                            //They're within 10 miles
-                            view = (ListView) findViewById(R.id.within10miles);
-                        }
-                        else if(miles > 1){
+                        else if(miles <= 5){
                             //They're within 5 miles
-                            view = (ListView) findViewById(R.id.within5miles);
-                        }else if(miles > 0.095){
-                            //They're within a mile
-                            view = (ListView) findViewById(R.id.within1mile);
-                        }else{
-                            //They're within 500 feet
-                            view = (ListView) findViewById(R.id.within500feet);
+                            for(String name : entry.getValue()){
+                                people5.append(name + '\n');
+                            }
                         }
-
-                        for(String name : entry.getValue()){
-                            view.
+                        else if(miles <= 10){
+                            //They're within 10 miles
+                            for(String name : entry.getValue()){
+                                people10.append(name + '\n');
+                            }
+                        }else if(miles <= 20){
+                            //They're within 20 miles
+                            for(String name : entry.getValue()){
+                                people20.append(name + '\n');
+                            }
                         }
                     }
+
                 }
 
 

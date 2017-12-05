@@ -13,6 +13,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/parent_home_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
@@ -26,10 +27,13 @@
                 android:textColor="#000000"
                 android:text="People within 500 feet" />
 
-            <ListView
+            <TextView
                 android:id="@+id/within500feet"
+                android:gravity="center"
+                android:textSize="18dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:text=""/>
 
             <TextView
                 android:id="@+id/textView4"
@@ -40,10 +44,13 @@
                 android:textColor="#000000"
                 android:text="People within 1 mile" />
 
-            <ListView
+            <TextView
                 android:id="@+id/within1mile"
+                android:gravity="center"
+                android:textSize="18dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:text=""/>
 
             <TextView
                 android:id="@+id/textView3"
@@ -54,10 +61,13 @@
                 android:textColor="#000000"
                 android:text="People within 5 miles" />
 
-            <ListView
+            <TextView
                 android:id="@+id/within5miles"
+                android:gravity="center"
+                android:textSize="18dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:text=""/>
 
             <TextView
                 android:id="@+id/textView6"
@@ -68,10 +78,13 @@
                 android:textColor="#000000"
                 android:text="People within 10 miles" />
 
-            <ListView
+            <TextView
                 android:id="@+id/within10miles"
+                android:gravity="center"
+                android:textSize="18dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:text=""/>
 
             <TextView
                 android:id="@+id/textView7"
@@ -82,10 +95,13 @@
                 android:textColor="#000000"
                 android:text="People within 20 miles" />
 
-            <ListView
+            <TextView
                 android:id="@+id/within20miles"
+                android:gravity="center"
+                android:textSize="18dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:text=""/>
 
         </LinearLayout>
     </ScrollView>
