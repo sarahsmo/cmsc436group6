@@ -146,8 +146,6 @@ public class FriendsPageActivity extends HomePage {
 
     AccessTokenTracker accessTokenTracker;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,7 +189,6 @@ public class FriendsPageActivity extends HomePage {
                                                        AccessToken currentAccessToken) {
 
                 if (currentAccessToken == null) {
-                    Log.i("LOOGOUT", "user logged out");
                     friendsListLayout.removeAllViewsInLayout();
                 }
             }
@@ -215,6 +212,25 @@ public class FriendsPageActivity extends HomePage {
                 Log.d("FACEBOK LOGIN", "SUCCESS");
                 user_id = loginResult.getAccessToken().getUserId();
                 token = loginResult.getAccessToken().getToken();
+
+                //retrieve name of user
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                // set name
+                                try {
+                                    name = object.getString("name");
+                                } catch (JSONException e) {
+                                    name = "noName";
+                                }
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "name");
+                request.setParameters(parameters);
+                request.executeAsync();
 
                 mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
                 mUserToPassDatabase.push();
@@ -387,6 +403,7 @@ public class FriendsPageActivity extends HomePage {
 
                                             public void onDataChange(DataSnapshot snapshot) {
                                                 friend_friendsList = (ArrayList<String>) snapshot.child(friend_id).child("FriendsList").getValue();
+
                                             }
 
                                             @Override
@@ -462,11 +479,6 @@ public class FriendsPageActivity extends HomePage {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
-
-
-
-
-
 
 
 }

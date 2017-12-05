@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,9 +33,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class HomePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -62,7 +70,6 @@ public class HomePage extends AppCompatActivity
     private ArrayList<String> friendsList;
     private String fireBaseLocation;
 
-    private HashMap<String, Integer> friendDist;
     private Location mInitialLocation;
     private Boolean mFirstTime = true;
 
@@ -105,7 +112,6 @@ public class HomePage extends AppCompatActivity
 
 
         friendsList = new ArrayList<String>();
-        friendDist = new HashMap<>();
     }
 
     @Override
@@ -136,6 +142,7 @@ public class HomePage extends AppCompatActivity
             i = new Intent(this, HomePage.class);
         } else if (id == R.id.nav_friends) {
             i = new Intent(this, FriendsPageActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_settings) {
             i = new Intent(this, SettingsActivity.class);
         } else if (id == R.id.nav_logout) {
@@ -203,21 +210,34 @@ public class HomePage extends AppCompatActivity
                 //mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
             }
 
+
+
             mUserToPassDatabase.addValueEventListener(new ValueEventListener() {
+
+                TreeMap<Float, List<String>> distances = new TreeMap<Float, List<String>>();
+
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.i(TAG, "On data change");
 
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            Log.i(TAG, "user snapshot for loop");
 
                             if(userSnapshot.getKey().equals(userFacebookID)) {
+                                Log.i(TAG, "found match");
 
                                 friendsList = (ArrayList<String>)userSnapshot.child("FriendsList").getValue();
                                 if(friendsList != null) {
+                                    Log.i(TAG, "Friends List is Not Null");
+
                                     for(DataSnapshot friendSnapshot : dataSnapshot.getChildren()){
+                                        Log.i(TAG, "Friendsnap " + friendSnapshot.getKey());
                                         if(friendsList.contains(friendSnapshot.getKey())){
                                             float distance = 0;
                                             Double latitude = (Double) friendSnapshot.child("Location").child("latitude").getValue();
+                                            Log.i(TAG, "Lat: " + latitude);
                                             Double longitude = (Double) friendSnapshot.child("Location").child("longitude").getValue();
+                                            Log.i(TAG, "Long: " + longitude);
 
                                             Location friendLocation = null;
 
@@ -227,19 +247,86 @@ public class HomePage extends AppCompatActivity
                                                 friendLocation.setLongitude(longitude);
                                             }
 
-                                            if(friendLocation != null) {
+                                            if(friendLocation != null && mLastLocationReading != null) {
+                                                Log.i(TAG, "entered friendLocation");
                                                 distance = mLastLocationReading.distanceTo(friendLocation);
+                                                Log.i(TAG, "Dist: " + distance);
+                                                if(!distances.containsKey(distance)){
+                                                    distances.put(distance, new LinkedList<String>());
+                                                }
+                                                Log.i(TAG, "Dist addeded ");
+                                                distances.get(distance).add((String) friendSnapshot.child("Name").getValue());
                                             }
-
-                                            //TODO - display distance
-                                            distance = friendDist.get(friendSnapshot.getKey());
                                         }
                                     }
                                 }
+                                updateView();
+                                break;
                             }
-                            break;
                     }
                 }
+
+
+                private void updateView(){
+
+                    if(distances.isEmpty()){
+                        Log.i(TAG, "Distances is empty");
+                    }else{
+                        Log.i(TAG, "Distances is not empty: " + distances.firstKey().toString());
+                    }
+
+                    //distances.put(1F, Arrays.asList("Bob", "Mary"));
+                    //distances.put(300F, Arrays.asList("Dick", "Jane"));
+                    //distances.put(3000F, Arrays.asList("Sue", "Al", "Frank"));
+
+                    TextView people20 = (TextView) findViewById(R.id.within20miles);
+                    if(people20 != null) people20.setText("");
+                    TextView people10 = (TextView) findViewById(R.id.within10miles);
+                    if(people10 != null) people10.setText("");
+                    TextView people5 = (TextView) findViewById(R.id.within5miles);
+                    if(people5 != null) people5.setText("");
+                    TextView people1 = (TextView) findViewById(R.id.within1mile);
+                    if(people1 != null) people1.setText("");
+                    TextView people500f = (TextView) findViewById(R.id.within500feet);
+                    if(people500f != null) people500f.setText("");
+
+                    for(Map.Entry<Float, List<String>> entry : distances.entrySet()){
+                        Float miles = entry.getKey() * 0.000621371F;
+
+                        if(miles <= 0.095){
+                            for(String name : entry.getValue()){
+                                people500f.append(name + '\n');
+                            }
+                        }
+                        else if(miles <= 1){
+                            //They're within 1 mile
+                            for(String name : entry.getValue()){
+                                people1.append(name + '\n');
+                            }
+                        }
+                        else if(miles <= 5){
+                            //They're within 5 miles
+                            for(String name : entry.getValue()){
+                                people5.append(name + '\n');
+                            }
+                        }
+                        else if(miles <= 10){
+                            //They're within 10 miles
+                            for(String name : entry.getValue()){
+                                people10.append(name + '\n');
+                            }
+                        }else if(miles <= 20){
+                            //They're within 20 miles
+                            for(String name : entry.getValue()){
+                                people20.append(name + '\n');
+                            }
+                        }
+                    }
+
+                }
+
+
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
