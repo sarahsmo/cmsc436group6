@@ -144,6 +144,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                    String firebaseEmail = (String) userSnapshot.child("email").getValue();
                    String firebasePassword = (String) userSnapshot.child("password").getValue();
 
+                   Log.i("EMAIL", firebaseEmail);
                    if (email.equals(firebaseEmail)) {
                        Toast.makeText(LoginActivity.this, "Loading your most recent account...",
                                Toast.LENGTH_LONG).show();
