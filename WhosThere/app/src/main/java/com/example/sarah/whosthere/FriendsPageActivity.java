@@ -315,9 +315,9 @@ public class FriendsPageActivity extends HomePage {
                 Log.d("NEW USER", "DOESN'T EXIST IN DATABASE");
                 mUserToPassDatabase.push();
 
-                mUserToPassDatabase.child(user_id).child("Location").setValue(null);
-                mUserToPassDatabase.child(user_id).child("FriendsList").setValue(friendsList);
-                mUserToPassDatabase.child(user_id).child("AddedFriends").setValue(addedFriends);
+                //mUserToPassDatabase.child(user_id).child("Location").setValue(null);
+                //mUserToPassDatabase.child(user_id).child("FriendsList").setValue(friendsList);
+                //mUserToPassDatabase.child(user_id).child("AddedFriends").setValue(addedFriends);
 
             } else {
 
