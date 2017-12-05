@@ -132,6 +132,7 @@ public class FriendsPageActivity extends HomePage {
 
     String token;
 
+    String name;
 
 
     String friend_id;
