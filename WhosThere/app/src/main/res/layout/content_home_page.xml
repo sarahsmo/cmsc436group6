@@ -27,7 +27,7 @@
                 android:text="People within 500 feet" />
 
             <ListView
-                android:id="@+id/within500list"
+                android:id="@+id/within500feet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -41,6 +41,7 @@
                 android:text="People within 1 mile" />
 
             <ListView
+                android:id="@+id/within1mile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -54,6 +55,7 @@
                 android:text="People within 5 miles" />
 
             <ListView
+                android:id="@+id/within5miles"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -67,6 +69,7 @@
                 android:text="People within 10 miles" />
 
             <ListView
+                android:id="@+id/within10miles"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -80,6 +83,7 @@
                 android:text="People within 20 miles" />
 
             <ListView
+                android:id="@+id/within20miles"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

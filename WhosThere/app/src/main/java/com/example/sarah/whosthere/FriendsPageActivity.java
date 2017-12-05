@@ -70,6 +70,8 @@ public class FriendsPageActivity extends HomePage {
 
     AccessTokenTracker accessTokenTracker;
 
+    String name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +106,6 @@ public class FriendsPageActivity extends HomePage {
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
                                                        AccessToken currentAccessToken) {
                 if (currentAccessToken == null) {
-                    Log.i("LOOGOUT", "user logged out");
                     friendsListLayout.removeAllViewsInLayout();
                 }
             }
@@ -127,6 +128,25 @@ public class FriendsPageActivity extends HomePage {
                 user_id = loginResult.getAccessToken().getUserId();
                 token = loginResult.getAccessToken().getToken();
 
+                //retrieve name of user
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                // set name
+                                try {
+                                    name = object.getString("name");
+                                } catch (JSONException e) {
+                                    name = "noName";
+                                }
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "name");
+                request.setParameters(parameters);
+                request.executeAsync();
+
                 mUserToPassDatabase = FirebaseDatabase.getInstance().getReference("FacebookFriends");
 
                 mUserToPassDatabase.push();
@@ -140,6 +160,11 @@ public class FriendsPageActivity extends HomePage {
                             if(user.getKey().equals(user_id)) {
                                 Log.i("USER ID MATCH", user_id);
                                 newUser = false;
+
+
+                                mUserToPassDatabase.child(user_id).child("Name").setValue(name);
+
+
                                 friendsList = (ArrayList<String>)user.child("FriendsList").getValue();
                                 if(friendsList == null) {
                                     friendsList = new ArrayList<String>();
@@ -162,11 +187,13 @@ public class FriendsPageActivity extends HomePage {
                 //if facebook id does not exist yet in the database
                 if(newUser) {
                     Log.d("NEW USER", "DOESN'T EXIST IN DATABASE");
+
                     mUserToPassDatabase.push();
 
-                    mUserToPassDatabase.child(user_id).child("Location").setValue(null);
+                    mUserToPassDatabase.child(user_id).child("Name").setValue(name);
                     mUserToPassDatabase.child(user_id).child("FriendsList").setValue(friendsList);
                     mUserToPassDatabase.child(user_id).child("AddedFriends").setValue(addedFriends);
+
                 } else {
                     Log.d("RETURNING USER", "ALREADY EXISTS IN DATABASE");
 
@@ -177,7 +204,7 @@ public class FriendsPageActivity extends HomePage {
                 Log.i("user_id", user_id);
                 Log.i("token", token);
 
-               populateFriendsList();
+                populateFriendsList();
             }
 
             @Override
@@ -250,24 +277,18 @@ public class FriendsPageActivity extends HomePage {
                                             @Override
                                             public void onDataChange(DataSnapshot snapshot) {
                                                 friend_friendsList = (ArrayList<String>) snapshot.child(friend_id).child("FriendsList").getValue();
-//                                                Log.d("SNAPSHOT", snapshot.toString());
-//                                                boolean found = false;
-//                                                for(DataSnapshot user : snapshot.getChildren()) {
-//                                                    Log.d("USER", user.getKey().toString());
-//
-//                                                    if(user.getKey().equals(friend_id)) {
-//                                                        found = true;
-//                                                        Log.i("USER ID MATCH", friend_id);
-//
-//                                                        //add current user to friendslist of friend
-//                                                        friend_friendsList = (ArrayList<String>)user.child("FriendsList").getValue();
-//
-//                                                        if(friend_friendsList!=null) {
-//                                                            Log.i("RECEIVED FRIENDS LIST", friend_friendsList.toString());
-//                                                        }
-//
-//                                                    }
-//                                                }
+
+                                                if(snapshot.child(friend_id).child("Name").getValue() == null) {
+                                                    mUserToPassDatabase.push();
+                                                    String friendName = null;
+                                                    try {
+                                                        friendName = friend.getString("name");
+                                                    } catch (JSONException e) {
+                                                        friendName = "NoName";
+                                                    }
+                                                    mUserToPassDatabase.child(friend_id).child("Name").setValue(friendName);
+
+                                                }
 
                                             }
 
@@ -319,22 +340,6 @@ public class FriendsPageActivity extends HomePage {
     }
 
 
-//    public static Bitmap getFacebookProfilePicture(String userID){
-//        URL imageURL = null;
-//        try {
-//            imageURL = new URL("https://graph.facebook.com/" + userID + "/picture?type=large");
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//        Bitmap bitmap = null;
-//        try {
-//            bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return bitmap;
-//    }
 
     //Forward activity result to callback manager
     @Override

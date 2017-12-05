@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,6 +36,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class HomePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -62,7 +66,6 @@ public class HomePage extends AppCompatActivity
     private ArrayList<String> friendsList;
     private String fireBaseLocation;
 
-    private HashMap<String, Integer> friendDist;
     private Location mInitialLocation;
     private Boolean mFirstTime = true;
 
@@ -105,7 +108,6 @@ public class HomePage extends AppCompatActivity
 
 
         friendsList = new ArrayList<String>();
-        friendDist = new HashMap<>();
     }
 
     @Override
@@ -136,6 +138,7 @@ public class HomePage extends AppCompatActivity
             i = new Intent(this, HomePage.class);
         } else if (id == R.id.nav_friends) {
             i = new Intent(this, FriendsPageActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         } else if (id == R.id.nav_settings) {
             i = new Intent(this, SettingsActivity.class);
         } else if (id == R.id.nav_logout) {
@@ -203,7 +206,12 @@ public class HomePage extends AppCompatActivity
                 //mUserToPassDatabase.child(userFacebookID).child("Location").setValue(mLastLocationReading);
             }
 
+
+
             mUserToPassDatabase.addValueEventListener(new ValueEventListener() {
+
+                TreeMap<Float, LinkedList<String>> distances = new TreeMap<Float, LinkedList<String>>();
+
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -229,17 +237,60 @@ public class HomePage extends AppCompatActivity
 
                                             if(friendLocation != null) {
                                                 distance = mLastLocationReading.distanceTo(friendLocation);
-                                            }
+                                                if(!distances.containsKey(distance)){
+                                                    distances.put(distance, new LinkedList<String>());
+                                                }
 
-                                            //TODO - display distance
-                                            distance = friendDist.get(friendSnapshot.getKey());
+                                                distances.get(distance).add((String) friendSnapshot.child("Name").getValue());
+                                            }
                                         }
                                     }
                                 }
                             }
+                            updateView();
                             break;
                     }
                 }
+
+
+                private void updateView(){
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, new LinkedList<String>());
+
+                    for(Map.Entry<Float, LinkedList<String>> entry : distances.entrySet()){
+                        double miles = entry.getKey() * 0.000621371;
+                        ListView view;
+
+                        if(miles > 20){
+                            continue;
+                        }
+                        else if(miles > 10){
+                            //They're within 20 miles
+                            view = (ListView) findViewById(R.id.within20miles);
+                        }
+                        else if(miles > 5){
+                            //They're within 10 miles
+                            view = (ListView) findViewById(R.id.within10miles);
+                        }
+                        else if(miles > 1){
+                            //They're within 5 miles
+                            view = (ListView) findViewById(R.id.within5miles);
+                        }else if(miles > 0.095){
+                            //They're within a mile
+                            view = (ListView) findViewById(R.id.within1mile);
+                        }else{
+                            //They're within 500 feet
+                            view = (ListView) findViewById(R.id.within500feet);
+                        }
+
+                        for(String name : entry.getValue()){
+                            view.
+                        }
+                    }
+                }
+
+
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
